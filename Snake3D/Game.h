@@ -39,6 +39,8 @@ struct snake
 class SnakeGame // SINGLETON
 {
 	snake snake;
+	Cube food;
+	bool foodExist;
 	int roundNumber;
 
 	public:
@@ -52,6 +54,7 @@ class SnakeGame // SINGLETON
 		{
 			snake.direction = _direction;
 		}
+		Cube getFood();
     private:
         SnakeGame() {};
         SnakeGame(SnakeGame const&);

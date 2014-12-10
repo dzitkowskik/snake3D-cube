@@ -51,6 +51,7 @@ vector<Cube> GetSnake()
 vector<Cube> GetFood()
 {
 	vector<Cube> result;
+	result.push_back(SnakeGame::getInstance().getFood());
 	return result;
 }
 
@@ -71,4 +72,16 @@ void SnakeGame::round()
 {
 	cout << "round " << ++(this->roundNumber)
 	<< " snake movement is " << this->snake.direction << endl;
+}
+
+Cube SnakeGame::getFood()
+{
+	if(!foodExist)
+	{
+		// TODO: Make random food
+		this->food.position = vec3(-3,2,2);
+		this->food.color = vec4(0,1,0,1);
+		foodExist = true;
+	}
+	return this->food;
 }
