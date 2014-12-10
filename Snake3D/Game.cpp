@@ -45,9 +45,12 @@ vector<Cube> GetBoard()
 vector<Cube> GetSnake()
 {
 	vector<Cube> result;
+	return result;
+}
 
-
-
+vector<Cube> GetFood()
+{
+	vector<Cube> result;
 	return result;
 }
 
@@ -56,8 +59,16 @@ vector<Cube> Game()
 	vector<Cube> result;
 	vector<Cube> board = GetBoard();
 	vector<Cube> snake = GetSnake();
-
-	result.insert( result.end(), board.begin(), board.end());
-	result.insert( result.end(), snake.begin(), snake.end());
+	vector<Cube> food = GetFood();
+	result.insert(result.end(), food.begin(), food.end());
+	result.insert(result.end(), board.begin(), board.end());
+	result.insert(result.end(), snake.begin(), snake.end());
 	return result;
+}
+
+// MAIN GAME LOOP
+void SnakeGame::round()
+{
+	cout << "round " << ++(this->roundNumber)
+	<< " snake movement is " << this->snake.direction << endl;
 }

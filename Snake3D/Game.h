@@ -36,4 +36,26 @@ struct snake
 	direction direction;
 };
 
+class SnakeGame // SINGLETON
+{
+	snake snake;
+	int roundNumber;
+
+	public:
+        static SnakeGame& getInstance()
+        {
+            static SnakeGame instance; 
+            return instance;
+        }
+		void round();
+		void move(direction _direction)
+		{
+			snake.direction = _direction;
+		}
+    private:
+        SnakeGame() {};
+        SnakeGame(SnakeGame const&);
+        void operator=(SnakeGame const&);
+};
+
 std::vector<Cube> Game();

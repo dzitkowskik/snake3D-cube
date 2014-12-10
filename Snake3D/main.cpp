@@ -274,24 +274,51 @@ void MouseWheel(int wheel, int direction, int x, int y)
 }
 
 void keyboard( unsigned char key, int x, int y ) {
-    switch( key ) {
-	case 033: // Escape Key
-	case 'q': 
-	case 'Q':
-	    exit( EXIT_SUCCESS );
-	    break;
-	case 'R': 
-	case 'r':
-		cout << "Reload shaders" << endl;
-		reloadShader();
-		break;
-    }
+	cout << "Pressed key " << key << endl;
+    switch( key ) 
+	{
+		case 033: // Escape Key
+		case 'q': 
+		case 'Q':
+			exit( EXIT_SUCCESS );
+			break;
+		case 'R': 
+		case 'r':
+			cout << "Reload shaders" << endl;
+			reloadShader();
+			break;
+	}
+}
+
+void specialInput(int key, int x, int y)
+{
+	switch(key)
+	{
+		case GLUT_KEY_UP:
+			SnakeGame::getInstance().move(direction::up);
+			break;	
+		case GLUT_KEY_DOWN:
+			SnakeGame::getInstance().move(direction::down);
+			break;
+		case GLUT_KEY_LEFT:
+			SnakeGame::getInstance().move(direction::left);
+			break;
+		case GLUT_KEY_RIGHT:
+			SnakeGame::getInstance().move(direction::right);
+			break;
+	}
 }
 
 void reshape( int width, int height )
 {
     glViewport( 0, 0, width, height );
 	aspect = float(width)/height;
+}
+
+void gameRound(int n)
+{
+	SnakeGame::getInstance().round();
+	glutTimerFunc(n, gameRound, n);
 }
 
 int main(int argc, char* argv[]) {
@@ -324,10 +351,11 @@ int main(int argc, char* argv[]) {
     glutKeyboardFunc(keyboard);
     glutReshapeFunc(reshape);
     glutMouseFunc(mouse);
+	glutSpecialFunc(specialInput);
 
+	// RUN GAME
+	gameRound(1000);
 
 	Angel::CheckError();
-
     glutMainLoop();
-
 }
