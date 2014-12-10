@@ -294,7 +294,6 @@ void reshape( int width, int height )
 	aspect = float(width)/height;
 }
 
-
 int main(int argc, char* argv[]) {
 	cout << "Left mouse to change rotation" << endl;
 	cout << "Right mouse to change model" << endl;
