@@ -29,6 +29,7 @@ struct Light
 	float attenuation;
 	float ambientCoefficient;
 };
+std::vector<Light> lights;
 
 // FUNCTIONS
 vec3 toSpherical(vec3 cartesian);
@@ -90,19 +91,19 @@ void setLightUniform(const char* uniformName, size_t index, const T& value)
 
 void loadLights()
 {
-	std::vector<Light> lights;
+	lights.clear();
 
-	//Light first;
-	//first.position = vec3(-4, 2, 4);
-	//first.color = vec3(1, 1, 1);
-	//first.ambientCoefficient = 0.0f; // no ambient
-	//first.attenuation = 0.1f;
-	//first.lightType = 1.0;
-	//lights.push_back(first);
+	Light first;
+	first.position = -lightPos;
+	first.color = vec3(.75, .75, .75);
+	first.ambientCoefficient = 0.08f;
+	first.attenuation = 0.001f;
+	first.lightType = 1.0;
+	lights.push_back(first);
 
 	Light second;
 	second.position = lightPos;
-	second.color = vec3(1, 1, 1);
+	second.color = vec3(.75, .75, .75);
 	second.ambientCoefficient = 0.08f;
 	second.attenuation = 0.001f;
 	second.lightType = 1.0;
@@ -142,27 +143,30 @@ void init() {
     glClearColor( 1.0, 1.0, 1.0, 1.0 ); 
 }
 
-void drawLight()
+void drawLights()
 {
-	Cube c = {lightPos, vec4(1,1,0,0)};
-	vec4 eye = vec4(eyePoint);
-	vec4 at( 0., 0., 0.,1);
-	vec4 up( 0., 1., 0.,0);
-	mat4 modelView = LookAt(eye, at, up);
-	modelView *= Angel::Scale(0.25, 0.25, 0.25);
+	for(int i=0; i<lights.size(); i++)
+	{
+		Light l = lights[i];
+		vec4 eye = vec4(eyePoint);
+		vec4 at( 0., 0., 0.,1);
+		vec4 up( 0., 1., 0.,0);
+		mat4 modelView = LookAt(eye, at, up);
+		modelView *= Angel::Scale(0.25, 0.25, 0.25);
 
-	modelView *= Angel::Translate(c.position);
-	glUniformMatrix4fv( ModelView, 1, GL_TRUE, modelView );
+		modelView *= Angel::Translate(l.position);
+		glUniformMatrix4fv(ModelView, 1, GL_TRUE, modelView);
 
-	vec4 material_color( 0.2, 0.3, 0.5, 1.0 );
-	vec4 material_specular_color( .0, .0, .0, .0 );
-	float  material_shininess = 0.0;
+		vec4 material_color(1, 1, 0, 1.0);
+		vec4 material_specular_color(.0, .0, .0, .0);
+		float  material_shininess = 0.0;
 
-	glUniform4fv( glGetUniformLocation(program, "MaterialColor"), 1, c.color );
-	glUniform4fv( glGetUniformLocation(program, "MaterialSpecularColor"), 1, material_specular_color );
-	glUniform1f( glGetUniformLocation(program, "Shininess"), material_shininess );
+		glUniform4fv( glGetUniformLocation(program, "MaterialColor"), 1, material_color);
+		glUniform4fv( glGetUniformLocation(program, "MaterialSpecularColor"), 1, material_specular_color);
+		glUniform1f( glGetUniformLocation(program, "Shininess"), material_shininess);
 
-	glDrawElements( GL_TRIANGLES, meshIndices.size(), GL_UNSIGNED_INT, &meshIndices[0]);
+		glDrawElements( GL_TRIANGLES, meshIndices.size(), GL_UNSIGNED_INT, &meshIndices[0]);
+	}
 }
 
 void display( void ) {
@@ -198,7 +202,7 @@ void display( void ) {
 		glDrawElements( GL_TRIANGLES, meshIndices.size(), GL_UNSIGNED_INT, &meshIndices[0]);
 	}
 
-	drawLight();
+	drawLights();
 
 	glutSwapBuffers();
 	Angel::CheckError();
