@@ -14,7 +14,7 @@ GLuint ModelView, Projection;
 GLuint program;
 vector<int> meshIndices;
 
-vec3 eyePoint(2., 0., 0.);
+vec3 eyePoint(10., 0., 0.);
 vec3 lightPos(13, 13, 13);
 vec2 mousePos;
 vec2 oldCoords(0, 0);
@@ -299,16 +299,16 @@ void specialInput(int key, int x, int y)
 	switch(key)
 	{
 		case GLUT_KEY_UP:
-			SnakeGame::getInstance().move(direction::up);
+			SnakeGame::getInstance().move(Direction::up);
 			break;	
 		case GLUT_KEY_DOWN:
-			SnakeGame::getInstance().move(direction::down);
+			SnakeGame::getInstance().move(Direction::down);
 			break;
 		case GLUT_KEY_LEFT:
-			SnakeGame::getInstance().move(direction::left);
+			SnakeGame::getInstance().move(Direction::left);
 			break;
 		case GLUT_KEY_RIGHT:
-			SnakeGame::getInstance().move(direction::right);
+			SnakeGame::getInstance().move(Direction::right);
 			break;
 	}
 }
@@ -323,6 +323,7 @@ void gameRound(int n)
 {
 	SnakeGame::getInstance().round();
 	glutTimerFunc(n, gameRound, n);
+	glutPostRedisplay();
 }
 
 int main(int argc, char* argv[]) {
@@ -358,8 +359,8 @@ int main(int argc, char* argv[]) {
 	glutSpecialFunc(specialInput);
 
 	// RUN GAME
-	SnakeGame::getInstance().initBoard(5);
-	gameRound(1000);
+	SnakeGame::getInstance().initBoard(7);
+	gameRound(500);
 
 	Angel::CheckError();
     glutMainLoop();

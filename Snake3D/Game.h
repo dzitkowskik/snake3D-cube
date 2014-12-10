@@ -6,34 +6,66 @@ struct Cube
 {
 	 vec3 position;
 	 vec4 color;
+
+	 Cube(){}
+	 ~Cube(){}
+	 Cube(Cube const& c)
+	 {
+		 this->position = c.position;
+		 this->color = c.color;
+	 }
+	 Cube(vec3 _position, vec4 _color=vec4(0,0,1,1))
+	 {
+		 this->position = _position;
+		 this->color = _color;
+	 }
 };
 
-struct range
+struct Range
 {
 	int from;
 	int to;
 
-	range(int _from, int _to)
+	Range(int _from, int _to)
 	{
 		from = _from;
 		to = _to;
 	}
-	~range(){}
+	~Range(){}
 };
 
-enum direction
-{
-	left,
-	right,
-	up,
-	down,
-	count
+enum Direction 
+{ 
+	up, 
+	down, 
+	left, 
+	right, 
+	directions_count 
 };
 
-struct Snake
+enum Side 
 {
-	std::list<Cube> cubes;
-	direction direction;
+	pos_z, 
+	neg_z, 
+	pos_x, 
+	neg_x, 
+	pos_y, 
+	neg_y, 
+	sides_count 
+};
+
+class Snake
+{
+	public:
+		std::list<Cube> cubes;
+		Direction direction;
+		Side side;
+		void makeMove();
+	private:
+		vec3 moveUp(int m, vec3 np, Side s);
+		vec3 moveDown(int m, vec3 np, Side s);
+		vec3 moveLeft(int m, vec3 np, Side s);
+		vec3 moveRight(int m, vec3 np, Side s);
 };
 
 class SnakeGame // SINGLETON
@@ -51,7 +83,7 @@ class SnakeGame // SINGLETON
             return instance;
         }
 		void round();
-		void move(direction _direction)
+		void move(Direction _direction)
 		{
 			snake.direction = _direction;
 		}
@@ -60,10 +92,9 @@ class SnakeGame // SINGLETON
 		void initBoard(int _size)
 		{
 			boardSize = _size;
-			Cube c1 = { vec3(boardSize/2 + 1, 0, 0), vec4(0,0,1,0) };
-			Cube c2 = { vec3(boardSize/2 + 1, 0, -1), vec4(0,0,1,0) };
-			this->snake.cubes.push_back(c1);
-			this->snake.cubes.push_back(c2);
+			this->snake.cubes.push_back(Cube(vec3(boardSize/2 + 1, 0, 0)));
+			this->snake.cubes.push_back(Cube(vec3(boardSize/2 + 1, -1, 0)));
+			this->snake.side = Side::pos_x;
 		}
 		int getBoardSize() { return this->boardSize; }
 		void eatFood() { this->foodExist = false; }
