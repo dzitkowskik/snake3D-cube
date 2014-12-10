@@ -48,6 +48,8 @@ vector<Cube> GetBoard()
 vector<Cube> GetSnake()
 {
 	vector<Cube> result;
+	Snake s = SnakeGame::getInstance().getSnake();
+	result.insert(result.begin(), s.cubes.begin(), s.cubes.end());
 	return result;
 }
 
@@ -86,24 +88,12 @@ vec3 randomPointOnCube()
 	int z = getRandInt(-m, m);
 	switch(s)
 	{
-		case side::pos_z:
-			z = m;
-			break;
-		case side::neg_z:
-			z = -m;
-			break;
-		case side::pos_x:
-			x = m;
-			break;
-		case side::neg_x:
-			x = -m;
-			break;
-		case side::pos_y:
-			y = m;
-			break;
-		case side::neg_y:
-			y = -m;
-			break;
+		case side::pos_z: z = m; break;
+		case side::neg_z: z = -m; break;
+		case side::pos_x: x = m; break;
+		case side::neg_x: x = -m; break;
+		case side::pos_y: y = m; break;
+		case side::neg_y: y = -m; break;
 	}
 	return vec3(x, y, z);
 }
@@ -113,17 +103,16 @@ void SnakeGame::round()
 {
 	cout << "round " << ++(this->roundNumber)
 	<< " snake movement is " << this->snake.direction << endl;
+
 }
 
 Cube SnakeGame::getFood()
 {
 	if(!foodExist)
 	{
-		// TODO: Make random food
 		this->food.position = randomPointOnCube();
 		this->food.color = vec4(0,1,0,1);
 		foodExist = true;
 	}
 	return this->food;
 }
-

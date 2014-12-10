@@ -30,7 +30,7 @@ enum direction
 	count
 };
 
-struct snake
+struct Snake
 {
 	std::list<Cube> cubes;
 	direction direction;
@@ -38,7 +38,7 @@ struct snake
 
 class SnakeGame // SINGLETON
 {
-	snake snake;
+	Snake snake;
 	Cube food;
 	bool foodExist;
 	int roundNumber;
@@ -56,9 +56,14 @@ class SnakeGame // SINGLETON
 			snake.direction = _direction;
 		}
 		Cube getFood();
+		Snake getSnake(){ return this->snake; }
 		void initBoard(int _size)
 		{
 			boardSize = _size;
+			Cube c1 = { vec3(boardSize/2 + 1, 0, 0), vec4(0,0,1,0) };
+			Cube c2 = { vec3(boardSize/2 + 1, 0, -1), vec4(0,0,1,0) };
+			this->snake.cubes.push_back(c1);
+			this->snake.cubes.push_back(c2);
 		}
 		int getBoardSize() { return this->boardSize; }
 		void eatFood() { this->foodExist = false; }
