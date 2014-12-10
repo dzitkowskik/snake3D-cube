@@ -42,6 +42,7 @@ class SnakeGame // SINGLETON
 	Cube food;
 	bool foodExist;
 	int roundNumber;
+	int boardSize;
 
 	public:
         static SnakeGame& getInstance()
@@ -55,6 +56,12 @@ class SnakeGame // SINGLETON
 			snake.direction = _direction;
 		}
 		Cube getFood();
+		void initBoard(int _size)
+		{
+			boardSize = _size;
+		}
+		int getBoardSize() { return this->boardSize; }
+		void eatFood() { this->foodExist = false; }
     private:
         SnakeGame() {};
         SnakeGame(SnakeGame const&);
