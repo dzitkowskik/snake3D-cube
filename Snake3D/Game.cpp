@@ -101,8 +101,13 @@ vec3 randomPointOnCube()
 // MAIN GAME LOOP
 void SnakeGame::round()
 {
+	Snake sn = SnakeGame::getInstance().getSnake();
+
+	Side s = sn.side;
+
 	cout << "round " << ++(this->roundNumber)
-	<< " snake movement is " << this->snake.direction << endl;
+	<< " snake movement is " << this->snake.direction
+	<< "cube face is " << s << endl;
 
 	this->snake.makeMove();
 }
@@ -118,76 +123,522 @@ Cube SnakeGame::getFood()
 	return this->food;
 }
 
-vec3 Snake::moveUp(int m, vec3 np, Side s)
+vec3 Snake::moveUp(int m, vec3 np, Side s, vec3 d)
 {
-	switch(s)
+	int round = SnakeGame::getInstance().getRound();
+	
+	if (round<2) {np.z++;}
+	else
 	{
-		case Side::pos_x:
-			if(np.y < m) { np.y++; }
-			else { this->side = Side::pos_y; np.x--; }
-			break;
-		case Side::pos_y:
-			if(np.x > -m) { np.x--; }
-			else { this->side = Side::neg_x; np.y--; }
-			break;
-		case Side::neg_x:
-			if(np.y > -m) { np.y--; }
-			else { this->side = Side::neg_y; np.x++; }
-			break;
-		case Side::neg_y:
-			if(np.x < m) { np.x++; }
-			else { this->side = Side::pos_x; np.y++; }
-			break;
+		switch(s)
+		{
+			case Side::pos_x:
+				if ((np.z > -m)&&(np.z < m)&&(np.y > -m)&&(np.y < m)) //if the snake is inside the face pos_x
+				{
+					if (d.z == 1) {np.z++;}
+					else if (d.z == -1) {np.z--;}
+					else if (d.y == 1) {np.y++;}
+					else if (d.y == -1) {np.y--;}
+				}
+				else 
+				{
+					if ((np.z == -m)&&(d.z == -1)) {this->side = Side::neg_z; np.x--; }
+					else if ((np.z == m)&&(d.z == 1)) {this->side = Side::pos_z; np.x--; }
+					else if ((np.y == -m)&&(d.y == -1)) {this->side = Side::neg_y; np.x--; }
+					else if ((np.y == m)&&(d.y == 1)) {this->side = Side::pos_y; np.x--; }
+					
+					else if ((np.z == m)&&(d.y == 1)) { np.y++; }
+					else if ((np.z == m)&&(d.y == -1)) { np.y--; }
+					else if ((np.z == -m)&&(d.y == 1)) { np.y++; }
+					else if ((np.z == -m)&&(d.y == -1)) { np.y--; }
+					else if ((np.y == m)&&(d.z == 1)) { np.z++; }
+					else if ((np.y == m)&&(d.z == -1)) { np.z--; }
+					else if ((np.y == -m)&&(d.z == 1)) { np.z++; }
+					else if ((np.y == -m)&&(d.z == -1)) { np.z--; }	
+				}
+				break;
+			case Side::pos_y:
+				if ((np.z > -m)&&(np.z < m)&&(np.x > -m)&&(np.x < m)) //if the snake is inside the face pos_x
+				{
+					if (d.z == 1) {np.z++;}
+					else if (d.z == -1) {np.z--;}
+					else if (d.x == 1) {np.x++;}
+					else if (d.x == -1) {np.x--;}
+				}
+				else 
+				{
+					if ((np.z == -m)&&(d.z == -1)) {this->side = Side::neg_z; np.y--; }
+					else if ((np.z == m)&&(d.z == 1)) {this->side = Side::pos_z; np.y--; }
+					else if ((np.x == -m)&&(d.x == -1)) {this->side = Side::neg_x; np.y--; }
+					else if ((np.x == m)&&(d.x == 1)) {this->side = Side::pos_x; np.y--; }
+					
+					else if ((np.z == m)&&(d.x == 1)) { np.x++; }
+					else if ((np.z == m)&&(d.x == -1)) { np.x--; }
+					else if ((np.z == -m)&&(d.x == 1)) { np.x++; }
+					else if ((np.z == -m)&&(d.x == -1)) { np.x--; }
+					else if ((np.x == m)&&(d.z == 1)) { np.z++; }
+					else if ((np.x == m)&&(d.z == -1)) { np.z--; }
+					else if ((np.x == -m)&&(d.z == 1)) { np.z++; }
+					else if ((np.x == -m)&&(d.z == -1)) { np.z--; }	
+				}
+				break;
+			case Side::neg_x:
+				if ((np.z > -m)&&(np.z < m)&&(np.y > -m)&&(np.y < m)) //if the snake is inside the face pos_x
+				{
+					if (d.z == 1) {np.z++;}
+					else if (d.z == -1) {np.z--;}
+					else if (d.y == 1) {np.y++;}
+					else if (d.y == -1) {np.y--;}
+				}
+				else 
+				{
+					if ((np.z == -m)&&(d.z == -1)) {this->side = Side::neg_z; np.x++; }
+					else if ((np.z == m)&&(d.z == 1)) {this->side = Side::pos_z; np.x++; }
+					else if ((np.y == -m)&&(d.y == -1)) {this->side = Side::neg_y; np.x++; }
+					else if ((np.y == m)&&(d.y == 1)) {this->side = Side::pos_y; np.x++; }
+					
+					else if ((np.z == m)&&(d.y == 1)) { np.y++; }
+					else if ((np.z == m)&&(d.y == -1)) { np.y--; }
+					else if ((np.z == -m)&&(d.y == 1)) { np.y++; }
+					else if ((np.z == -m)&&(d.y == -1)) { np.y--; }
+					else if ((np.y == m)&&(d.z == 1)) { np.z++; }
+					else if ((np.y == m)&&(d.z == -1)) { np.z--; }
+					else if ((np.y == -m)&&(d.z == 1)) { np.z++; }
+					else if ((np.y == -m)&&(d.z == -1)) { np.z--; }		
+				}
+				break;
+			case Side::neg_y:
+				if ((np.z > -m)&&(np.z < m)&&(np.x > -m)&&(np.x < m)) //if the snake is inside the face pos_x
+				{
+					if (d.z == 1) {np.z++;}
+					else if (d.z == -1) {np.z--;}
+					else if (d.x == 1) {np.x++;}
+					else if (d.x == -1) {np.x--;}
+				}
+				else 
+				{
+					if ((np.z == -m)&&(d.z == -1)) {this->side = Side::neg_z; np.y++; }
+					else if ((np.z == m)&&(d.z == 1)) {this->side = Side::pos_z; np.y++; }
+					else if ((np.x == -m)&&(d.x == -1)) {this->side = Side::neg_x; np.y++; }
+					else if ((np.x == m)&&(d.x == 1)) {this->side = Side::pos_x; np.y++; }
+					
+					else if ((np.z == m)&&(d.x == 1)) { np.x++; }
+					else if ((np.z == m)&&(d.x == -1)) { np.x--; }
+					else if ((np.z == -m)&&(d.x == 1)) { np.x++; }
+					else if ((np.z == -m)&&(d.x == -1)) { np.x--; }
+					else if ((np.x == m)&&(d.z == 1)) { np.z++; }
+					else if ((np.x == m)&&(d.z == -1)) { np.z--; }
+					else if ((np.x == -m)&&(d.z == 1)) { np.z++; }
+					else if ((np.x == -m)&&(d.z == -1)) { np.z--; }	
+				}
+				break;
+				case Side::pos_z:
+				if ((np.x > -m)&&(np.x < m)&&(np.y > -m)&&(np.y < m)) //if the snake is inside the face pos_x
+				{
+					if (d.x == 1) {np.x++;}
+					else if (d.x == -1) {np.x--;}
+					else if (d.y == 1) {np.y++;}
+					else if (d.y == -1) {np.y--;}
+				}
+				else 
+				{
+					if ((np.x == -m)&&(d.x == -1)) {this->side = Side::neg_x; np.z--; }
+					else if ((np.x == m)&&(d.x == 1)) {this->side = Side::pos_x; np.z--; }
+					else if ((np.y == -m)&&(d.y == -1)) {this->side = Side::neg_y; np.z--; }
+					else if ((np.y == m)&&(d.y == 1)) {this->side = Side::pos_y; np.z--; }
+					
+					else if ((np.x == m)&&(d.y == 1)) { np.y++; }
+					else if ((np.x == m)&&(d.y == -1)) { np.y--; }
+					else if ((np.x == -m)&&(d.y == 1)) { np.y++; }
+					else if ((np.x == -m)&&(d.y == -1)) { np.y--; }
+					else if ((np.y == m)&&(d.x == 1)) { np.x++; }
+					else if ((np.y == m)&&(d.x == -1)) { np.x--; }
+					else if ((np.y == -m)&&(d.x == 1)) { np.x++; }
+					else if ((np.y == -m)&&(d.x == -1)) { np.x--; }	
+				}
+				break;
+				case Side::neg_z:
+				if ((np.x > -m)&&(np.x < m)&&(np.y > -m)&&(np.y < m)) //if the snake is inside the face pos_x
+				{
+					if (d.x == 1) {np.x++;}
+					else if (d.x == -1) {np.x--;}
+					else if (d.y == 1) {np.y++;}
+					else if (d.y == -1) {np.y--;}
+				}
+				else 
+				{
+					if ((np.x == -m)&&(d.x == -1)) {this->side = Side::neg_x; np.z++; }
+					else if ((np.x == m)&&(d.x == 1)) {this->side = Side::pos_x; np.z++; }
+					else if ((np.y == -m)&&(d.y == -1)) {this->side = Side::neg_y; np.z++; }
+					else if ((np.y == m)&&(d.y == 1)) {this->side = Side::pos_y; np.z++; }
+					
+					else if ((np.x == m)&&(d.y == 1)) { np.y++; }
+					else if ((np.x == m)&&(d.y == -1)) { np.y--; }
+					else if ((np.x == -m)&&(d.y == 1)) { np.y++; }
+					else if ((np.x == -m)&&(d.y == -1)) { np.y--; }
+					else if ((np.y == m)&&(d.x == 1)) { np.x++; }
+					else if ((np.y == m)&&(d.x == -1)) { np.x--; }
+					else if ((np.y == -m)&&(d.x == 1)) { np.x++; }
+					else if ((np.y == -m)&&(d.x == -1)) { np.x--; }	
+				}
+				break;
+		}
 	}
 	return np;
 }
 
-vec3 Snake::moveDown(int m, vec3 np, Side s)
-{
+vec3 Snake::moveLeft(int m, vec3 np, Side s, vec3 d)
+{ 
 	switch(s)
 	{
 		case Side::pos_x:
-			if(np.y > -m) { np.y--; }
-			else { this->side = Side::neg_y; np.x--; }
+			if ((np.z > -m)&&(np.z < m)&&(np.y > -m)&&(np.y < m)) //if the snake is inside the face pos_x
+			{
+				if (d.z == 1) {np.y--;}
+				if (d.z == -1) {np.y++;}
+				if (d.y == 1) {np.z++;}
+				if (d.y == -1) {np.z--;}
+			}
+			else // if the snake is in the border
+			{
+				if ((np.z == -m)&&(d.y == -1)) {this->side = Side::neg_z; np.x--;}
+				else if ((np.z == -m)&&(d.y == 1)) {np.z++;}
+				else if ((np.z == m)&&(d.y == -1)) {np.z--;}
+				else if ((np.z == m)&&(d.y == 1)) {this->side = Side::pos_z; np.x--;}
+				else if ((np.z == -m)&&(d.z == -1)) {np.y++;} 
+				else if ((np.z == m)&&(d.z == 1)) {np.y--;}
+				
+				else if ((np.y == -m)&&(d.z == -1)) {np.y++;}
+				else if ((np.y == -m)&&(d.z == 1)) {this->side = Side::neg_y; np.x--;}
+				else if ((np.y == m)&&(d.z == 1)) {np.y--;}
+				else if ((np.y == m)&&(d.z == -1)) {this->side = Side::pos_y; np.x--;}
+				else if ((np.y == -m)&&(d.y == -1)) {np.z--;}
+				else if ((np.y == m)&&(d.y == 1)) { np.z++;}
+			}
 			break;
 		case Side::pos_y:
-			if(np.x < m) { np.x++; }
-			else { this->side = Side::pos_x; np.y--; }
+			if ((np.z > -m)&&(np.z < m)&&(np.x > -m)&&(np.x < m)) //if the snake is inside the face pos_x
+			{
+				if (d.z == 1) {np.x++;}
+				if (d.z == -1) {np.x--;}
+				if (d.x == -1) {np.z++;}
+				if (d.x == 1) {np.z--;}
+			}
+			else // if the snake is in the border
+			{
+				if ((np.z == -m)&&(d.x == 1)) {this->side = Side::neg_z; np.y--;}
+				else if ((np.z == -m)&&(d.x == -1)) {np.z++;}
+				else if ((np.z == m)&&(d.x == 1)) {np.z--;}
+				else if ((np.z == m)&&(d.x == -1)) {this->side = Side::pos_z; np.y--;}
+				else if ((np.z == -m)&&(d.z == -1)) {np.x--;} 
+				else if ((np.z == m)&&(d.z == 1)) {np.x++;}
+				
+				else if ((np.x == -m)&&(d.z == 1)) {np.x++;}
+				else if ((np.x == -m)&&(d.z == -1)) {this->side = Side::neg_x; np.y--;}
+				else if ((np.x == m)&&(d.z == -1)) {np.x--;}
+				else if ((np.x == m)&&(d.z == 1)) {this->side = Side::pos_x; np.y--;}
+				else if ((np.x == -m)&&(d.x == -1)) {np.z++;}
+				else if ((np.x == m)&&(d.x == 1)) { np.z--;}
+			}
 			break;
 		case Side::neg_x:
-			if(np.y < m) { np.y++; }
-			else { this->side = Side::pos_y; np.x++; }
+			if ((np.z > -m)&&(np.z < m)&&(np.y > -m)&&(np.y < m)) //if the snake is inside the face pos_x
+			{
+				if (d.z == 1) {np.y++;}
+				if (d.z == -1) {np.y--;}
+				if (d.y == 1) {np.z--;}
+				if (d.y == -1) {np.z++;}
+			}
+			else // if the snake is in the border
+			{
+				if ((np.z == -m)&&(d.y == 1)) {this->side = Side::neg_z; np.x++;}
+				else if ((np.z == -m)&&(d.y == -1)) {np.z++;}
+				else if ((np.z == m)&&(d.y == 1)) {np.z--;}
+				else if ((np.z == m)&&(d.y == -1)) {this->side = Side::pos_z; np.x++;}
+				else if ((np.z == -m)&&(d.z == -1)) { np.y--;} 
+				else if ((np.z == m)&&(d.z == 1)) {; np.y++;}
+				
+				else if ((np.y == -m)&&(d.z == 1)) {np.y++;}
+				else if ((np.y == -m)&&(d.z == -1)) {this->side = Side::neg_y; np.x++;}
+				else if ((np.y == m)&&(d.z == -1)) {np.y--;}
+				else if ((np.y == m)&&(d.z == 1)) {this->side = Side::pos_y; np.x++;}
+				else if ((np.y == -m)&&(d.y == -1)) {np.z++;}
+				else if ((np.y == m)&&(d.y == 1)) {np.z--;}
+			}
 			break;
 		case Side::neg_y:
-			if(np.x > -m) { np.x--; }
-			else { this->side = Side::neg_x; np.y++; }
+			if ((np.z > -m)&&(np.z < m)&&(np.x > -m)&&(np.x < m)) //if the snake is inside the face pos_x
+			{
+				if (d.z == 1) {np.x--;}
+				if (d.z == -1) {np.x++;}
+				if (d.x == -1) {np.z--;}
+				if (d.x == 1) {np.z++;}
+			}
+			else // if the snake is in the border
+			{
+				if ((np.z == -m)&&(d.x == -1)) {this->side = Side::neg_z; np.y++;}
+				else if ((np.z == -m)&&(d.x == 1)) {np.z++;}
+				else if ((np.z == m)&&(d.x == -1)) {np.z--;}
+				else if ((np.z == m)&&(d.x == 1)) {this->side = Side::pos_z; np.y++;}
+				else if ((np.z == -m)&&(d.z == -1)) {np.x++;} 
+				else if ((np.z == m)&&(d.z == 1)) {np.x--;}
+				
+				else if ((np.x == -m)&&(d.z == -1)) {np.x++;}
+				else if ((np.x == -m)&&(d.z == 1)) {this->side = Side::neg_x; np.y++;}
+				else if ((np.x == m)&&(d.z == 1)) {np.x--;}
+				else if ((np.x == m)&&(d.z == -1)) {this->side = Side::pos_x; np.y++;}
+				else if ((np.x == -m)&&(d.x == -1)) {np.z--;}
+				else if ((np.x == m)&&(d.x == 1)) { np.z++;}
+			}
+			break;
+			case Side::pos_z:
+			if ((np.x > -m)&&(np.x < m)&&(np.y > -m)&&(np.y < m)) //if the snake is inside the face pos_x
+			{
+				if (d.x == 1) {np.y++;}
+				if (d.x == -1) {np.y--;}
+				if (d.y == 1) {np.x--;}
+				if (d.y == -1) {np.x++;}
+			}
+			else // if the snake is in the border
+			{
+				if ((np.x == -m)&&(d.y == 1)) {this->side = Side::neg_x; np.z--;}
+				else if ((np.x == -m)&&(d.y == -1)) {np.x++;}
+				else if ((np.x == m)&&(d.y == 1)) {np.x--;}
+				else if ((np.x == m)&&(d.y == -1)) {this->side = Side::pos_x; np.z--;}
+				else if ((np.x == -m)&&(d.x == -1)) {np.y--;} 
+				else if ((np.x == m)&&(d.x == 1)) {np.y++;}
+				
+				else if ((np.y == -m)&&(d.x == 1)) {np.y++;}
+				else if ((np.y == -m)&&(d.x == -1)) {this->side = Side::neg_y; np.z--;}
+				else if ((np.y == m)&&(d.x == -1)) {np.y--;}
+				else if ((np.y == m)&&(d.x == 1)) {this->side = Side::pos_y; np.z--;}
+				else if ((np.y == -m)&&(d.y == -1)) {np.x++;}
+				else if ((np.y == m)&&(d.y == 1)) { np.x--;}
+			}
+			break;
+			case Side::neg_z:
+			if ((np.x > -m)&&(np.x < m)&&(np.y > -m)&&(np.y < m)) //if the snake is inside the face pos_x
+			{
+				if (d.x == 1) {np.y--;}
+				if (d.x == -1) {np.y++;}
+				if (d.y == 1) {np.x++;}
+				if (d.y == -1) {np.x--;}
+			}
+			else // if the snake is in the border
+			{
+				if ((np.x == -m)&&(d.y == -1)) {this->side = Side::neg_x; np.z++;}
+				else if ((np.x == -m)&&(d.y == 1)) {np.x++;}
+				else if ((np.x == m)&&(d.y == -1)) {np.x--;}
+				else if ((np.x == m)&&(d.y == 1)) {this->side = Side::pos_x; np.z++;}
+				else if ((np.x == -m)&&(d.x == -1)) {np.y++;} 
+				else if ((np.x == m)&&(d.x == 1)) {np.y--;}
+				
+				else if ((np.y == -m)&&(d.x == -1)) {np.y++;}
+				else if ((np.y == -m)&&(d.x == 1)) {this->side = Side::neg_y; np.z--;}
+				else if ((np.y == m)&&(d.x == 1)) {np.y--;}
+				else if ((np.y == m)&&(d.x == -1)) {this->side = Side::pos_y; np.z--;}
+				else if ((np.y == -m)&&(d.y == -1)) {np.x--;}
+				else if ((np.y == m)&&(d.y == 1)) { np.x++;}
+			}
 			break;
 	}
+	SnakeGame::getInstance().move(Direction::up);
 	return np;
 }
+
+vec3 Snake::moveRight(int m, vec3 np, Side s, vec3 d)
+{ 
+	switch(s)
+	{
+		case Side::pos_x:
+			if ((np.z > -m)&&(np.z < m)&&(np.y > -m)&&(np.y < m)) //if the snake is inside the face pos_x
+			{
+				if (d.z == 1) {np.y++;}
+				if (d.z == -1) {np.y--;}
+				if (d.y == 1) {np.z--;}
+				if (d.y == -1) {np.z++;}
+			}
+			else // if the snake is in the border
+			{
+				if ((np.z == -m)&&(d.y == 1)) {this->side = Side::neg_z; np.x--;}
+				else if ((np.z == -m)&&(d.y == -1)) {np.z++;}
+				else if ((np.z == m)&&(d.y == 1)) {np.z--;}
+				else if ((np.z == m)&&(d.y == -1)) {this->side = Side::pos_z; np.x--;}
+				else if ((np.z == -m)&&(d.z == -1)) {np.y--;} 
+				else if ((np.z == m)&&(d.z == 1)) {np.y++;}
+				
+				else if ((np.y == -m)&&(d.z == 1)) {np.y++;}
+				else if ((np.y == -m)&&(d.z == -1)) {this->side = Side::neg_y; np.x--;}
+				else if ((np.y == m)&&(d.z == -1)) {np.y--;}
+				else if ((np.y == m)&&(d.z == 1)) {this->side = Side::pos_y; np.x--;}
+				else if ((np.y == -m)&&(d.y == -1)) {np.z++;}
+				else if ((np.y == m)&&(d.y == 1)) { np.z--;}
+			}
+			break;
+		case Side::pos_y:
+			if ((np.z > -m)&&(np.z < m)&&(np.x > -m)&&(np.x < m)) //if the snake is inside the face pos_x
+			{
+				if (d.z == 1) {np.x--;}
+				if (d.z == -1) {np.x++;}
+				if (d.x == -1) {np.z--;}
+				if (d.x == 1) {np.z++;}
+			}
+			else // if the snake is in the border
+			{
+				if ((np.z == -m)&&(d.x == -1)) {this->side = Side::neg_z; np.y--;}
+				else if ((np.z == -m)&&(d.x == 1)) {np.z++;}
+				else if ((np.z == m)&&(d.x == -1)) {np.z--;}
+				else if ((np.z == m)&&(d.x == 1)) {this->side = Side::pos_z; np.y--;}
+				else if ((np.z == -m)&&(d.z == -1)) {np.x++;} 
+				else if ((np.z == m)&&(d.z == 1)) {np.x--;}
+				
+				else if ((np.x == -m)&&(d.z == -1)) {np.x++;}
+				else if ((np.x == -m)&&(d.z == 1)) {this->side = Side::neg_x; np.y--;}
+				else if ((np.x == m)&&(d.z == 1)) {np.x--;}
+				else if ((np.x == m)&&(d.z == -1)) {this->side = Side::pos_x; np.y--;}
+				else if ((np.x == -m)&&(d.x == -1)) {np.z--;}
+				else if ((np.x == m)&&(d.x == 1)) { np.z++;}
+			}
+			break;
+		case Side::neg_x:
+			if ((np.z > -m)&&(np.z < m)&&(np.y > -m)&&(np.y < m)) //if the snake is inside the face pos_x
+			{
+				if (d.z == 1) {np.y--;}
+				if (d.z == -1) {np.y++;}
+				if (d.y == 1) {np.z++;}
+				if (d.y == -1) {np.z--;}
+			}
+			else // if the snake is in the border
+			{
+				if ((np.z == -m)&&(d.y == -1)) {this->side = Side::neg_z; np.x++;}
+				else if ((np.z == -m)&&(d.y == 1)) {np.z++;}
+				else if ((np.z == m)&&(d.y == -1)) {np.z--;}
+				else if ((np.z == m)&&(d.y == 1)) {this->side = Side::pos_z; np.x++;}
+				else if ((np.z == -m)&&(d.z == -1)) { np.y++;} 
+				else if ((np.z == m)&&(d.z == 1)) {; np.y--;}
+				
+				else if ((np.y == -m)&&(d.z == -1)) {np.y++;}
+				else if ((np.y == -m)&&(d.z == 1)) {this->side = Side::neg_y; np.x++;}
+				else if ((np.y == m)&&(d.z == 1)) {np.y--;}
+				else if ((np.y == m)&&(d.z == -1)) {this->side = Side::pos_y; np.x++;}
+				else if ((np.y == -m)&&(d.y == -1)) {np.z--;}
+				else if ((np.y == m)&&(d.y == 1)) {np.z++;}
+			}
+			break;
+		case Side::neg_y:
+			if ((np.z > -m)&&(np.z < m)&&(np.x > -m)&&(np.x < m)) //if the snake is inside the face pos_x
+			{
+				if (d.z == 1) {np.x++;}
+				if (d.z == -1) {np.x--;}
+				if (d.x == -1) {np.z++;}
+				if (d.x == 1) {np.z--;}
+			}
+			else // if the snake is in the border
+			{
+				if ((np.z == -m)&&(d.x == 1)) {this->side = Side::neg_z; np.y++;}
+				else if ((np.z == -m)&&(d.x == -1)) {np.z++;}
+				else if ((np.z == m)&&(d.x == 1)) {np.z--;}
+				else if ((np.z == m)&&(d.x == -1)) {this->side = Side::pos_z; np.y++;}
+				else if ((np.z == -m)&&(d.z == -1)) {np.x--;} 
+				else if ((np.z == m)&&(d.z == 1)) {np.x++;}
+				
+				else if ((np.x == -m)&&(d.z == 1)) {np.x++;}
+				else if ((np.x == -m)&&(d.z == -1)) {this->side = Side::neg_x; np.y++;}
+				else if ((np.x == m)&&(d.z == -1)) {np.x--;}
+				else if ((np.x == m)&&(d.z == 1)) {this->side = Side::pos_x; np.y++;}
+				else if ((np.x == -m)&&(d.x == -1)) {np.z++;}
+				else if ((np.x == m)&&(d.x == 1)) { np.z--;}
+			}
+			break;
+			case Side::pos_z:
+			if ((np.x > -m)&&(np.x < m)&&(np.y > -m)&&(np.y < m)) //if the snake is inside the face pos_x
+			{
+				if (d.x == 1) {np.y--;}
+				if (d.x == -1) {np.y++;}
+				if (d.y == 1) {np.x++;}
+				if (d.y == -1) {np.x--;}
+			}
+			else // if the snake is in the border
+			{
+				if ((np.x == -m)&&(d.y == -1)) {this->side = Side::neg_x; np.z--;}
+				else if ((np.x == -m)&&(d.y == 1)) {np.x++;}
+				else if ((np.x == m)&&(d.y == -1)) {np.x--;}
+				else if ((np.x == m)&&(d.y == 1)) {this->side = Side::pos_x; np.z--;}
+				else if ((np.x == -m)&&(d.x == -1)) {np.y++;} 
+				else if ((np.x == m)&&(d.x == 1)) {np.y--;}
+				
+				else if ((np.y == -m)&&(d.x == -1)) {np.y++;}
+				else if ((np.y == -m)&&(d.x == 1)) {this->side = Side::neg_y; np.z--;}
+				else if ((np.y == m)&&(d.x == 1)) {np.y--;}
+				else if ((np.y == m)&&(d.x == -1)) {this->side = Side::pos_y; np.z--;}
+				else if ((np.y == -m)&&(d.y == -1)) {np.x--;}
+				else if ((np.y == m)&&(d.y == 1)) { np.x++;}
+			}
+			break;
+			case Side::neg_z:
+			if ((np.x > -m)&&(np.x < m)&&(np.y > -m)&&(np.y < m)) //if the snake is inside the face pos_x
+			{
+				if (d.x == 1) {np.y++;}
+				if (d.x == -1) {np.y--;}
+				if (d.y == 1) {np.x--;}
+				if (d.y == -1) {np.x++;}
+			}
+			else // if the snake is in the border
+			{
+				if ((np.x == -m)&&(d.y == 1)) {this->side = Side::neg_x; np.z++;}
+				else if ((np.x == -m)&&(d.y == -1)) {np.x++;}
+				else if ((np.x == m)&&(d.y == 1)) {np.x--;}
+				else if ((np.x == m)&&(d.y == -1)) {this->side = Side::pos_x; np.z++;}
+				else if ((np.x == -m)&&(d.x == -1)) {np.y--;} 
+				else if ((np.x == m)&&(d.x == 1)) {np.y++;}
+				
+				else if ((np.y == -m)&&(d.x == 1)) {np.y++;}
+				else if ((np.y == -m)&&(d.x == -1)) {this->side = Side::neg_y; np.z--;}
+				else if ((np.y == m)&&(d.x == -1)) {np.y--;}
+				else if ((np.y == m)&&(d.x == 1)) {this->side = Side::pos_y; np.z--;}
+				else if ((np.y == -m)&&(d.y == -1)) {np.x++;}
+				else if ((np.y == m)&&(d.y == 1)) { np.x--;}
+			}
+			break;
+	}
+	SnakeGame::getInstance().move(Direction::up);
+	return np;
+}
+
 
 
 void Snake::makeMove()
 {
 	int m = (SnakeGame::getInstance().getBoardSize() / 2) + 1;
-	Cube head = this->cubes.front();
+	
+	Snake snake_temp = SnakeGame::getInstance().getSnake();
+	Cube head = snake_temp.cubes.front();
+	snake_temp.cubes.pop_front();
+	Cube head2 =  snake_temp.cubes.front();
+	vec3 dir = head.position - head2.position; 
+
+	/*int xt =  head.position.x -  head2.position.x ;
+	int yt =  head.position.y -  head2.position.y ;
+	int zt =  head.position.z -  head2.position.z ;
+	vec3 dir(xt,yt,zt);
+	*/
+
 	Direction d = this->direction;
 	Side s = this->side;
 	vec3 np = head.position;
+
+	cout <<endl << "x=" << dir.x  << " y=" << dir.y  << " z=" << dir.z <<endl;
 	
 	switch(d)
 	{
 		case Direction::up:
-			np = moveUp(m, np, s);
-			break;
-		case Direction::down:
-			np = moveDown(m, np, s);
+			np = moveUp(m, np, s, dir);
 			break;
 		case Direction::left:
-			
+			np = moveLeft(m, np, s, dir);
 			break;
 		case Direction::right:
-			
+			np = moveRight(m, np, s, dir);
 			break;
 	}
 

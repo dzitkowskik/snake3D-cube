@@ -62,10 +62,9 @@ class Snake
 		Side side;
 		void makeMove();
 	private:
-		vec3 moveUp(int m, vec3 np, Side s);
-		vec3 moveDown(int m, vec3 np, Side s);
-		vec3 moveLeft(int m, vec3 np, Side s);
-		vec3 moveRight(int m, vec3 np, Side s);
+		vec3 moveUp(int m, vec3 np, Side s, vec3 d);
+		vec3 moveLeft(int m, vec3 np, Side s, vec3 d);
+		vec3 moveRight(int m, vec3 np, Side s, vec3 d);
 };
 
 class SnakeGame // SINGLETON
@@ -89,6 +88,7 @@ class SnakeGame // SINGLETON
 		}
 		Cube getFood();
 		Snake getSnake(){ return this->snake; }
+		int getRound(){return this->roundNumber;}
 		void initBoard(int _size)
 		{
 			boardSize = _size;

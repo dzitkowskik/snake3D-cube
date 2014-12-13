@@ -298,12 +298,6 @@ void specialInput(int key, int x, int y)
 {
 	switch(key)
 	{
-		case GLUT_KEY_UP:
-			SnakeGame::getInstance().move(Direction::up);
-			break;	
-		case GLUT_KEY_DOWN:
-			SnakeGame::getInstance().move(Direction::down);
-			break;
 		case GLUT_KEY_LEFT:
 			SnakeGame::getInstance().move(Direction::left);
 			break;
