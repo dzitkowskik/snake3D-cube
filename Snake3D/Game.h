@@ -68,6 +68,7 @@ class Snake
 		Direction direction;
 		Side side;
 		void makeMove(bool extendSnake);
+		bool isValid();
 	private:
 		vec3 moveUp(int m, vec3 np, Side s, vec3 d);
 		vec3 moveLeft(int m, vec3 np, Side s, vec3 d);
@@ -83,6 +84,7 @@ class SnakeGame // SINGLETON
 	int roundNumber;
 	int boardSize;
 	int score;
+	bool failed;
 
 	public:
         static SnakeGame& getInstance()

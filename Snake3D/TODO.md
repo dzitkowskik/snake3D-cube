@@ -1,7 +1,7 @@
 # TODO BASICS
 
 1. DONE
-2. Implement failure (if snake hits itself, player looses)
+2. DONE
 3. Implement pause game using P key ? optional ?
 4. Implement drawing player score in right upper corner
 

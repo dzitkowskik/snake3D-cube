@@ -101,10 +101,18 @@ vec3 randomPointOnCube()
 // MAIN GAME LOOP
 void SnakeGame::round()
 {
-	cout << "round " << ++(this->roundNumber)
-	<< " snake movement is " << this->snake.direction
-	<< "cube face is " << this->snake.side 
-	<< "score is " << this->score << endl;
+	if(snake.isValid() && !failed)
+	{
+		cout << "round " << ++(this->roundNumber)
+		<< " snake movement is " << this->snake.direction
+		<< "cube face is " << this->snake.side 
+		<< "score is " << this->score << endl;
+	}
+	else
+	{
+		failed = true;
+		cout << "you lost!" << endl;
+	}
 
 	this->snake.makeMove(this->extendSnake);
 	this->extendSnake = false;
@@ -645,4 +653,14 @@ void Snake::makeMove(bool extendSnake)
 	this->cubes.push_front(newHead);
 	if(!extendSnake)
 		this->cubes.pop_back();
+}
+
+bool Snake::isValid()
+{
+	Cube head = this->cubes.front();
+	for(auto it = ++(this->cubes.begin()); it != this->cubes.end(); it++)
+	{
+		if((*it) == head) return false;
+	}
+	return true;
 }
