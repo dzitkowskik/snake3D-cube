@@ -67,6 +67,7 @@
   <ItemGroup>
     <None Include="phong-shader.frag" />
     <None Include="phong-shader.vert" />
+    <None Include="TODO.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angel\Angel.h" />

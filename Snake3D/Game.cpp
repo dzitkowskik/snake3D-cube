@@ -605,8 +605,6 @@ vec3 Snake::moveRight(int m, vec3 np, Side s, vec3 d)
 	return np;
 }
 
-
-
 void Snake::makeMove()
 {
 	int m = (SnakeGame::getInstance().getBoardSize() / 2) + 1;
@@ -617,17 +615,9 @@ void Snake::makeMove()
 	Cube head2 =  snake_temp.cubes.front();
 	vec3 dir = head.position - head2.position; 
 
-	/*int xt =  head.position.x -  head2.position.x ;
-	int yt =  head.position.y -  head2.position.y ;
-	int zt =  head.position.z -  head2.position.z ;
-	vec3 dir(xt,yt,zt);
-	*/
-
 	Direction d = this->direction;
 	Side s = this->side;
 	vec3 np = head.position;
-
-	cout <<endl << "x=" << dir.x  << " y=" << dir.y  << " z=" << dir.z <<endl;
 	
 	switch(d)
 	{

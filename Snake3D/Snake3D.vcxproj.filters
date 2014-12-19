@@ -24,6 +24,7 @@
     <None Include="phong-shader.frag">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="TODO.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Uniform.h">
