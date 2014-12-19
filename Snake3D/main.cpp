@@ -19,7 +19,7 @@ vec3 lightPos(13, 13, 13);
 vec2 mousePos;
 vec2 oldCoords(0, 0);
 
-
+bool pause;
 
 struct Light 
 {
@@ -287,6 +287,10 @@ void keyboard( unsigned char key, int x, int y ) {
 			cout << "Reload shaders" << endl;
 			reloadShader();
 			break;
+		case 'P':
+		case 'p':
+			pause = !pause;
+			break;
 	}
 }
 
@@ -311,7 +315,10 @@ void reshape( int width, int height )
 
 void gameRound(int n)
 {
-	SnakeGame::getInstance().round();
+	if(!pause)
+	{
+		SnakeGame::getInstance().round();
+	}
 	glutTimerFunc(n, gameRound, n);
 	glutPostRedisplay();
 }

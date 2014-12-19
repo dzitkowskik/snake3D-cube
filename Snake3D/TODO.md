@@ -2,7 +2,7 @@
 
 1. DONE
 2. DONE
-3. Implement pause game using P key ? optional ?
+3. DONE
 4. Implement drawing player score in right upper corner
 
 # TODO OPTIONAL
