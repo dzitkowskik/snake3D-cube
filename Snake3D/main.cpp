@@ -287,10 +287,6 @@ void keyboard( unsigned char key, int x, int y ) {
 			cout << "Reload shaders" << endl;
 			reloadShader();
 			break;
-		case 'f':
-			SnakeGame::getInstance().eatFood();
-			glutPostRedisplay();
-			break;
 	}
 }
 

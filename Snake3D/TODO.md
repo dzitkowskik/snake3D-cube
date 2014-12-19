@@ -1,6 +1,6 @@
 # TODO BASICS
 
-1. Implement gathering/scoring food (if snake head hits food, snake should be extended by one cube, and 1 should be added to player score)
+1. DONE
 2. Implement failure (if snake hits itself, player looses)
 3. Implement pause game using P key ? optional ?
 4. Implement drawing player score in right upper corner

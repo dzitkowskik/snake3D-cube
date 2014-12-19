@@ -101,24 +101,33 @@ vec3 randomPointOnCube()
 // MAIN GAME LOOP
 void SnakeGame::round()
 {
-	Snake sn = SnakeGame::getInstance().getSnake();
-
-	Side s = sn.side;
-
 	cout << "round " << ++(this->roundNumber)
 	<< " snake movement is " << this->snake.direction
-	<< "cube face is " << s << endl;
+	<< "cube face is " << this->snake.side 
+	<< "score is " << this->score << endl;
 
-	this->snake.makeMove();
+	this->snake.makeMove(this->extendSnake);
+	this->extendSnake = false;
+
+	// Check if snake hits the food
+	Cube head = this->snake.cubes.front();
+	Cube food = this->food;
+
+	if(head == food)
+	{
+		this->extendSnake = true;
+		this->foodExist = false;
+		this->score++;
+	}
 }
 
 Cube SnakeGame::getFood()
 {
-	if(!foodExist)
+	if(!this->foodExist)
 	{
 		this->food.position = randomPointOnCube();
 		this->food.color = vec4(0,1,0,1);
-		foodExist = true;
+		this->foodExist = true;
 	}
 	return this->food;
 }
@@ -605,7 +614,7 @@ vec3 Snake::moveRight(int m, vec3 np, Side s, vec3 d)
 	return np;
 }
 
-void Snake::makeMove()
+void Snake::makeMove(bool extendSnake)
 {
 	int m = (SnakeGame::getInstance().getBoardSize() / 2) + 1;
 	
@@ -634,5 +643,6 @@ void Snake::makeMove()
 
 	Cube newHead(np, head.color);
 	this->cubes.push_front(newHead);
-	this->cubes.pop_back();
+	if(!extendSnake)
+		this->cubes.pop_back();
 }
