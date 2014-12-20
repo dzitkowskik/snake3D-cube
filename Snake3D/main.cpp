@@ -14,10 +14,14 @@ GLuint ModelView, Projection;
 GLuint program;
 vector<int> meshIndices;
 
-vec3 eyePoint(10., 0., 0.);
+vec3 eyePoint(15., 0., 0.);
+vec3 up_eye( 0., 0., 1.);
 vec3 lightPos(13, 13, 13);
 vec2 mousePos;
 vec2 oldCoords(0, 0);
+float alpha=0.008;
+float beta=0.01;
+float h=15;
 
 bool pause;
 
@@ -150,8 +154,8 @@ void drawLights()
 		Light l = lights[i];
 		vec4 eye = vec4(eyePoint);
 		vec4 at( 0., 0., 0.,1);
-		vec4 up( 0., 1., 0.,0);
-		mat4 modelView = LookAt(eye, at, up);
+		//vec4 up( 0., 1., 0.,0);
+		mat4 modelView = LookAt(eye, at, vec4(up_eye,1));
 		modelView *= Angel::Scale(0.25, 0.25, 0.25);
 
 		modelView *= Angel::Translate(l.position);
@@ -184,10 +188,10 @@ void display( void ) {
 	for (int i=0; i < cubesToDraw.size(); i++)
 	{
 		Cube c = cubesToDraw[i];
+		//setCameraEye() ;
 		vec4 eye = vec4(eyePoint);
 		vec4 at( 0., 0., 0.,1);
-		vec4 up( 0., 1., 0.,0);
-		mat4 modelView = LookAt(eye, at, up);
+		mat4 modelView = LookAt(eye, at, vec4(up_eye,1));
 		modelView *= Angel::Translate(c.position);
 		modelView *= Angel::Scale(0.9, 0.9, 0.9);
 		glUniformMatrix4fv( ModelView, 1, GL_TRUE, modelView );
@@ -323,6 +327,51 @@ void gameRound(int n)
 	glutPostRedisplay();
 }
 
+void idle()
+{
+	Snake snake_temp = SnakeGame::getInstance().getSnake();
+	Cube head = snake_temp.cubes.front();
+	snake_temp.cubes.pop_front();
+	Cube head2 =  snake_temp.cubes.front();
+	vec3 dir = head.position - head2.position; 
+	Side s = snake_temp.side;
+
+	//vec3 t=(10,(head.position.y-eyePoint.y)*0.008,(head.position.z-eyePoint.z)*0.008);
+	//eyePoint=t;
+	if (s==pos_x)
+	{
+		eyePoint=eyePoint+(head.position-eyePoint-vec3(-h,0,0))*alpha;
+		up_eye=up_eye+(dir-up_eye)*beta;
+	}
+	else if (s==pos_z)
+	{
+		eyePoint=eyePoint+(head.position-eyePoint-vec3(0,0,-h))*alpha;
+		up_eye=up_eye+(dir-up_eye)*beta;
+	}
+	else if (s==neg_z)
+	{
+		eyePoint=eyePoint+(head.position-eyePoint-vec3(0,0,+h))*alpha;
+		up_eye=up_eye+(dir-up_eye)*beta;
+	}
+	else if (s==pos_y)
+	{
+		eyePoint=eyePoint+(head.position-eyePoint-vec3(0,-h,0))*alpha;
+		up_eye=up_eye+(dir-up_eye)*beta;
+	}
+	else if (s==neg_y)
+	{
+		eyePoint=eyePoint+(head.position-eyePoint-vec3(0,+h,0))*alpha;
+		up_eye=up_eye+(dir-up_eye)*beta;
+	}
+	else if (s==neg_x)
+	{
+		eyePoint=eyePoint+(head.position-eyePoint-vec3(h,0,0))*alpha;
+		up_eye=up_eye+(dir-up_eye)*beta;
+	}
+
+	glutPostRedisplay();
+}
+
 int main(int argc, char* argv[]) {
 	cout << "Left mouse to change rotation" << endl;
 	cout << "Right mouse to change model" << endl;
@@ -353,6 +402,8 @@ int main(int argc, char* argv[]) {
     glutKeyboardFunc(keyboard);
     glutReshapeFunc(reshape);
     glutMouseFunc(mouse);
+	//intelligent camera
+	glutIdleFunc(idle);
 	glutSpecialFunc(specialInput);
 
 	// RUN GAME
