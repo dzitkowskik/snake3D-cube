@@ -92,7 +92,7 @@ class SnakeGame // SINGLETON
             static SnakeGame instance; 
             return instance;
         }
-		void round();
+		bool round();
 		void move(Direction _direction)
 		{
 			snake.direction = _direction;
@@ -103,9 +103,15 @@ class SnakeGame // SINGLETON
 		void initBoard(int _size)
 		{
 			boardSize = _size;
+			this->snake.cubes.clear();
+			this->foodExist = false;
+			this->roundNumber = 0;
+			this->score = 0;
+			this->failed = false;
 			this->snake.cubes.push_back(Cube(vec3(boardSize/2 + 1, 0, 0)));
-			this->snake.cubes.push_back(Cube(vec3(boardSize/2 + 1, -1, 0)));
+			this->snake.cubes.push_back(Cube(vec3(boardSize/2 + 1, 0, -1)));
 			this->snake.side = Side::pos_x;
+			this->snake.direction = Direction::up;
 		}
 		int getBoardSize() { return this->boardSize; }
 		void eatFood() { this->foodExist = false; }

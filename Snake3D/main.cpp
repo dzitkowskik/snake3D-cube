@@ -19,10 +19,12 @@ vec3 up_eye( 0., 0., 1.);
 vec3 lightPos(13, 13, 13);
 vec2 mousePos;
 vec2 oldCoords(0, 0);
-float alpha=0.008;
-float beta=0.01;
+float alpha=0.02;
+float beta=0.02;
 float h=15;
 
+int size = 6;
+int speed = 200;
 bool pause;
 
 struct Light 
@@ -38,7 +40,7 @@ std::vector<Light> lights;
 // FUNCTIONS
 vec3 toSpherical(vec3 cartesian);
 vec3 toCartesian(vec3 spherical);
-
+void gameRound(int n);
 
 
 void loadModel()
@@ -154,7 +156,7 @@ void drawLights()
 		Light l = lights[i];
 		vec4 eye = vec4(eyePoint);
 		vec4 at( 0., 0., 0.,1);
-		//vec4 up( 0., 1., 0.,0);
+
 		mat4 modelView = LookAt(eye, at, vec4(up_eye,1));
 		modelView *= Angel::Scale(0.25, 0.25, 0.25);
 
@@ -176,7 +178,7 @@ void drawLights()
 void display( void ) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    mat4  projection = Perspective( 45.0, aspect, 0.5, 30.0 );
+    mat4  projection = Perspective( 45.0, aspect, 0.1, 300.0 );
 
 
     glUniformMatrix4fv( Projection, 1, GL_TRUE, projection );
@@ -188,10 +190,11 @@ void display( void ) {
 	for (int i=0; i < cubesToDraw.size(); i++)
 	{
 		Cube c = cubesToDraw[i];
-		//setCameraEye() ;
+
 		vec4 eye = vec4(eyePoint);
 		vec4 at( 0., 0., 0.,1);
 		mat4 modelView = LookAt(eye, at, vec4(up_eye,1));
+
 		modelView *= Angel::Translate(c.position);
 		modelView *= Angel::Scale(0.9, 0.9, 0.9);
 		glUniformMatrix4fv( ModelView, 1, GL_TRUE, modelView );
@@ -239,6 +242,7 @@ void mouse( int button, int state, int x, int y )
 	vec3 sperical = toSpherical(eyePoint);
     if(state == GLUT_DOWN)
 	{
+		pause = true;
 		switch(button) 
 		{
 			case GLUT_LEFT_BUTTON:  
@@ -248,7 +252,9 @@ void mouse( int button, int state, int x, int y )
 			case GLUT_RIGHT_BUTTON:
 				break;
 		}
-    }
+    } else if (state == GLUT_UP) {
+		pause = false;
+	}
 }
 
 void mouseMotion(int x, int y)
@@ -268,13 +274,35 @@ void MouseWheel(int wheel, int direction, int x, int y)
     if (direction==-1)
     {
         eyePoint *= 1.1;
- 
+		h *= 1.1;
     }
     else if (direction==+1)
     {
         eyePoint /= 1.1;
+		h /= 1.1;
     }
 	glutPostRedisplay();
+}
+
+void restart()
+{
+	eyePoint = vec3(15., 0., 0.);
+	up_eye = vec3( 0., 0., 1.);
+	SnakeGame::getInstance().initBoard(size);
+	pause = false;
+}
+
+void printInstruction()
+{
+	cout << "INSTRUCTION" << endl;
+	cout << "Press q to quit" << endl;
+	cout << "Press p to pause" << endl;
+	cout << "Press + to speed up" << endl;
+	cout << "Press - to slow down" << endl;
+	cout << "Press [ to lower board size" << endl;
+	cout << "Press ] to enlarge board size" << endl;
+	cout << "Press r to restart the game" << endl;
+	cout << "HAVE FUN!" << endl;
 }
 
 void keyboard( unsigned char key, int x, int y ) {
@@ -286,12 +314,41 @@ void keyboard( unsigned char key, int x, int y ) {
 		case 'Q':
 			exit( EXIT_SUCCESS );
 			break;
-		case 'R': 
-		case 'r':
-			cout << "Reload shaders" << endl;
-			reloadShader();
+		case '+':
+			speed -= 20;
+			if(speed < 100) speed = 100;
+			cout << "speed: " << speed << endl;
 			break;
-		case 'P':
+		case '-':
+			speed += 20;
+			if(speed > 600) speed = 600;
+			cout << "speed: " << speed << endl;
+			break;
+		case '4':
+			size = 4;
+			restart();
+			break;
+		case '[':
+			size -= 1;
+			if(size < 4) size = 4;
+			restart();
+			cout << "size: " << size << endl;
+			break;
+		case ']':
+			size += 1;
+			if(size > 13) size = 13;
+			restart();
+			cout << "size: " << size << endl;
+			break;
+		case 'C':
+		case 'c':
+			pause = true;
+			gameRound(speed);
+		case 'R': // Restart game
+		case 'r':
+			restart();
+			break;
+		case 'P': // Pause game
 		case 'p':
 			pause = !pause;
 			break;
@@ -321,14 +378,17 @@ void gameRound(int n)
 {
 	if(!pause)
 	{
-		SnakeGame::getInstance().round();
+		if(SnakeGame::getInstance().round())
+			return;
+		glutPostRedisplay();
 	}
-	glutTimerFunc(n, gameRound, n);
-	glutPostRedisplay();
+	glutTimerFunc(speed, gameRound, speed);
 }
 
 void idle()
 {
+	if (pause) return;
+
 	Snake snake_temp = SnakeGame::getInstance().getSnake();
 	Cube head = snake_temp.cubes.front();
 	snake_temp.cubes.pop_front();
@@ -336,8 +396,6 @@ void idle()
 	vec3 dir = head.position - head2.position; 
 	Side s = snake_temp.side;
 
-	//vec3 t=(10,(head.position.y-eyePoint.y)*0.008,(head.position.z-eyePoint.z)*0.008);
-	//eyePoint=t;
 	if (s==pos_x)
 	{
 		eyePoint=eyePoint+(head.position-eyePoint-vec3(-h,0,0))*alpha;
@@ -373,9 +431,7 @@ void idle()
 }
 
 int main(int argc, char* argv[]) {
-	cout << "Left mouse to change rotation" << endl;
-	cout << "Right mouse to change model" << endl;
-	cout << "Press 'r' to reload shaders" << endl;
+	printInstruction();
     glutInit(&argc, argv);
 	glutInitContextVersion(3, 2);
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
@@ -387,7 +443,7 @@ int main(int argc, char* argv[]) {
     );
 
 	glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_3_2_CORE_PROFILE);
-	glutCreateWindow("02561-04-04");
+	glutCreateWindow("Snake 3D");
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutReshapeWindow(512, 512);
@@ -402,13 +458,14 @@ int main(int argc, char* argv[]) {
     glutKeyboardFunc(keyboard);
     glutReshapeFunc(reshape);
     glutMouseFunc(mouse);
+
 	//intelligent camera
 	glutIdleFunc(idle);
 	glutSpecialFunc(specialInput);
 
 	// RUN GAME
-	SnakeGame::getInstance().initBoard(7);
-	gameRound(500);
+	SnakeGame::getInstance().initBoard(size);
+	gameRound(speed);
 
 	Angel::CheckError();
     glutMainLoop();
