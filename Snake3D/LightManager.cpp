@@ -17,7 +17,7 @@ void LightManager::setLightUniform(const char* uniformName, size_t index, const 
 	uniformSetter.SetData(value);
 }
 
-void LightManager::loadLights()
+void LightManager::init()
 {
 	this->lights.clear();
 
@@ -36,15 +36,17 @@ void LightManager::loadLights()
 	second.attenuation = 0.001f;
 	second.lightType = 1.0;
 	lights.push_back(second);
+}
 
-
-	for(size_t i = 0; i < lights.size(); ++i)
+void LightManager::loadLights()
+{
+	for(size_t i = 0; i < this->lights.size(); ++i)
 	{
-		setLightUniform("position",i,lights[i].position);
-		setLightUniform("color",i,lights[i].color);
-		setLightUniform("lightType",i,lights[i].lightType);
-		setLightUniform("attenuation",i,lights[i].attenuation);
-		setLightUniform("ambientCoefficient",i,lights[i].ambientCoefficient);
+		setLightUniform("position",i,this->lights[i].position);
+		setLightUniform("color",i,this->lights[i].color);
+		setLightUniform("lightType",i,this->lights[i].lightType);
+		setLightUniform("attenuation",i,this->lights[i].attenuation);
+		setLightUniform("ambientCoefficient",i,this->lights[i].ambientCoefficient);
 	}
 
 	glUniform1i( glGetUniformLocation(this->shader.shaderProgram, "NumLights"), lights.size() );

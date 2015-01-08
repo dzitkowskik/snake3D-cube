@@ -23,12 +23,13 @@ public:
 	LightManager(Shader shader):shader(shader)
 	{ 
 		lightPos = vec3(15,15,15);
-		loadLights(); 
+		init(); 
 	}
 	~LightManager(){}
-
+private:
+	void init();
+public:
 	void loadLights();
-	void drawLights(Camera camera);
 
 	template<typename T>
 	void setLightUniform(const char* uniformName, size_t index, const T& value);

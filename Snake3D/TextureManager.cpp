@@ -39,12 +39,12 @@ GLuint TextureManager::initCubemapTexture() {
 	
 	const char* cube[] = 
 	{
-		"textures/cm_left.bmp", 
-		"textures/cm_right.bmp", 
-		"textures/cm_top.bmp", 
-		"textures/cm_bottom.bmp", 
-		"textures/cm_back.bmp", 
-		"textures/cm_front.bmp" 
+		"textures/posx.bmp", 
+		"textures/negx.bmp", 
+		"textures/posy.bmp", 
+		"textures/negy.bmp", 
+		"textures/posz.bmp", 
+		"textures/negz.bmp" 
 	};
 
 	GLenum types[] = 

@@ -7,6 +7,7 @@
 #include "CubeMesh.h"
 #include "Camera.h"
 #include "Helpers.h"
+#include "TextureManager.h"
 #include <iostream>
 #include <sstream>
 
@@ -16,7 +17,9 @@ CubeMesh smallCube;
 CubeMesh skybox;
 CubeMesh sun;
 Camera camera;
+LightManager lightManager;
 
+GLuint cubemapTexture;
 vec2 mousePos;
 vec2 oldCoords(0, 0);
 float alpha=0.02;
@@ -31,17 +34,18 @@ void gameRound(int n);
 void init() {
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_CULL_FACE);
-	glCullFace( GL_BACK);
    
-
 	Shader phongShader("phong-shader.vert", "phong-shader.frag");
-
 	Shader skyboxShader("skybox.vert", "skybox.frag");
-
+	
+	skybox = CubeMesh(skyboxShader, "cube.obj");
 	smallCube = CubeMesh(phongShader, "cube.obj");
+	lightManager = LightManager(phongShader);
 
 	camera = Camera(vec3(15,0,0), vec3(0,0,1), 1.0f);
+
+	TextureManager tm;
+	cubemapTexture = tm.initCubemapTexture();
 
 	glEnable( GL_DEPTH_TEST );
     glClearColor( 1.0, 1.0, 1.0, 1.0 ); 
@@ -52,11 +56,17 @@ void display( void ) {
 
 	vector<Cube> cubesToDraw = Game();
 
+	smallCube.activate();
+	lightManager.loadLights();
 	for (int i=0; i < cubesToDraw.size(); i++)
 	{
 		Cube c = cubesToDraw[i];
 		smallCube.draw(c, camera);
 	}
+
+	skybox.activate();
+	Cube sky(vec3(), vec4(), 50.0);
+	skybox.drawCubeMap(sky, camera, cubemapTexture);
 
 	glutSwapBuffers();
 	Angel::CheckError();

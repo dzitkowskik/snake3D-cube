@@ -3,8 +3,8 @@
 #pragma once
 class TextureManager
 {
-public:
 	GLuint loadCubemapTexture(const char* cube[], GLenum types[]);
+public:
 	GLuint initCubemapTexture();
 };
 

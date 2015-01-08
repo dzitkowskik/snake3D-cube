@@ -41,7 +41,6 @@ void CubeMesh::loadModel()
 void CubeMesh::activate()
 {
 	glUseProgram(this->shader.shaderProgram);
-	this->lights.loadLights();
 }
 
 void CubeMesh::draw(Cube cube, Camera camera)
@@ -54,7 +53,7 @@ void CubeMesh::draw(Cube cube, Camera camera)
 	mat4 modelView = LookAt(eye, at, vec4(camera.up_eye, 1.));
 
 	modelView *= Angel::Translate(cube.position);
-	modelView *= Angel::Scale(0.9, 0.9, 0.9);
+	modelView *= Angel::Scale(cube.scale, cube.scale, cube.scale);
 	glUniformMatrix4fv( this->shader.modelViewUniform, 1, GL_TRUE, modelView );
 
 	vec4 material_specular_color( .5, 0.2, .5, 1.0 );
@@ -63,6 +62,26 @@ void CubeMesh::draw(Cube cube, Camera camera)
 	glUniform4fv( glGetUniformLocation(this->shader.shaderProgram, "MaterialColor"), 1, cube.color );
 	glUniform4fv( glGetUniformLocation(this->shader.shaderProgram, "MaterialSpecularColor"), 1, material_specular_color );
 	glUniform1f( glGetUniformLocation(this->shader.shaderProgram, "Shininess"), material_shininess );
+
+	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, &this->indices[0]);
+}
+
+void CubeMesh::drawCubeMap(Cube cube, Camera camera, GLuint cubemapTexture)
+{
+	mat4  projection = Perspective( 45.0, camera.aspect, 0.1, 300.0 );
+    glUniformMatrix4fv( this->shader.projectionUniform, 1, GL_TRUE, projection );
+
+	vec4 eye = vec4(camera.eyePoint);
+	vec4 at( 0., 0., 0., 1.);
+	mat4 modelView = LookAt(eye, at, vec4(camera.up_eye, 1.));
+
+	modelView *= Angel::Translate(cube.position);
+	modelView *= Angel::Scale(cube.scale, cube.scale, cube.scale);
+	glUniformMatrix4fv( this->shader.modelViewUniform, 1, GL_TRUE, modelView );
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	glUniform1i(this->shader.cubemapUniform, 0);
 
 	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, &this->indices[0]);
 }

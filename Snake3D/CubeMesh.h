@@ -2,7 +2,6 @@
 #include "Game.h"
 #include "Camera.h"
 #include <vector>
-#include "LightManager.h"
 
 using namespace std;
 
@@ -14,15 +13,13 @@ public:
 	GLuint vertexArrayObject;
 	vector<int> indices;
 	string name;
-	LightManager lights;
 
 public:
 	CubeMesh(void){}
 	CubeMesh(Shader shader, const char* name)
 		:shader(shader),name(name) 
 	{
-		glUseProgram(this->shader.shaderProgram);
-		lights = LightManager(shader);
+		activate();
 		loadModel(); 
 	}
 	~CubeMesh(void){}
@@ -30,6 +27,7 @@ public:
 public:
 	void activate();
 	void draw(Cube cube, Camera camera);
+	void drawCubeMap(Cube cube, Camera camera, GLuint cubemapTexture);
 
 private:
 	void loadModel();
