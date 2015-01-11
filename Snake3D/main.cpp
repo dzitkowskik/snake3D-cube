@@ -336,8 +336,6 @@ void idle()
 	vec3 dir = head.position - head2.position; 
 	Side s = snake_temp.side;
 
-	//vec3 t=(10,(head.position.y-eyePoint.y)*0.008,(head.position.z-eyePoint.z)*0.008);
-	//eyePoint=t;
 	if (s==pos_x)
 	{
 		eyePoint=eyePoint+(head.position-eyePoint-vec3(-h,0,0))*alpha;
