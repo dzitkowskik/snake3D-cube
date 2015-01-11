@@ -67,7 +67,8 @@
   <ItemGroup>
     <None Include="phong-shader.frag" />
     <None Include="phong-shader.vert" />
-    <None Include="TODO.md" />
+    <None Include="skybox.frag" />
+    <None Include="skybox.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angel\Angel.h" />
@@ -75,14 +76,27 @@
     <ClInclude Include="Angel\mat.h" />
     <ClInclude Include="Angel\ObjLoader.h" />
     <ClInclude Include="Angel\vec.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="CubeMesh.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Helpers.h" />
+    <ClInclude Include="LightManager.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="TextureLoader.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Uniform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Angel\InitShader.cpp" />
     <ClCompile Include="Angel\ObjLoader.cpp" />
+    <ClCompile Include="CubeMesh.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Object Include="cube.obj">

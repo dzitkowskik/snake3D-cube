@@ -99,19 +99,19 @@ vec3 randomPointOnCube()
 }
 
 // MAIN GAME LOOP
-void SnakeGame::round()
+bool SnakeGame::round()
 {
 	if(snake.isValid() && !failed)
 	{
-		cout << "round " << ++(this->roundNumber)
-		<< " snake movement is " << this->snake.direction
-		<< "cube face is " << this->snake.side 
-		<< "score is " << this->score << endl;
+		++(this->roundNumber);
 	}
 	else
 	{
 		failed = true;
-		cout << "you lost!" << endl;
+		cout << "you lost! - your score was: " << this->score << endl;
+		cout << "to continue press c" << endl;
+		this->snake.cubes.front().color = vec4(1,1,0,1);
+		return failed;
 	}
 
 	this->snake.makeMove(this->extendSnake);
@@ -127,6 +127,7 @@ void SnakeGame::round()
 		this->foodExist = false;
 		this->score++;
 	}
+	return failed;
 }
 
 Cube SnakeGame::getFood()

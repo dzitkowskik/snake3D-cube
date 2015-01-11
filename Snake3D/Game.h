@@ -1,33 +1,9 @@
 #include "Angel.h"
 #include <vector>
 #include <list>
+#include "Cube.h"
 
-struct Cube
-{
-	vec3 position;
-	vec4 color;
-
-	Cube(){}
-	~Cube(){}
-	Cube(Cube const& c)
-	{
-		this->position = c.position;
-		this->color = c.color;
-	}
-	Cube(vec3 _position, vec4 _color=vec4(0,0,1,1))
-	{
-		this->position = _position;
-		this->color = _color;
-	}
-	inline bool operator == (const Cube &other) const
-	{
-	return 
-		other.position.x == this->position.x &&
-		other.position.y == this->position.y &&
-		other.position.z == this->position.z;
-	}
-};
-
+#pragma once
 struct Range
 {
 	int from;
@@ -87,12 +63,13 @@ class SnakeGame // SINGLETON
 	bool failed;
 
 	public:
+
         static SnakeGame& getInstance()
         {
             static SnakeGame instance; 
             return instance;
         }
-		void round();
+		bool round();
 		void move(Direction _direction)
 		{
 			snake.direction = _direction;
@@ -103,9 +80,15 @@ class SnakeGame // SINGLETON
 		void initBoard(int _size)
 		{
 			boardSize = _size;
+			this->snake.cubes.clear();
+			this->foodExist = false;
+			this->roundNumber = 0;
+			this->score = 0;
+			this->failed = false;
 			this->snake.cubes.push_back(Cube(vec3(boardSize/2 + 1, 0, 0)));
-			this->snake.cubes.push_back(Cube(vec3(boardSize/2 + 1, -1, 0)));
+			this->snake.cubes.push_back(Cube(vec3(boardSize/2 + 1, 0, -1)));
 			this->snake.side = Side::pos_x;
+			this->snake.direction = Direction::up;
 		}
 		int getBoardSize() { return this->boardSize; }
 		void eatFood() { this->foodExist = false; }
