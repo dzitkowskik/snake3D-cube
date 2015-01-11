@@ -16,6 +16,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{304f27c3-45fe-4dc0-a088-d94ec7ce8235}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\textures">
+      <UniqueIdentifier>{f09976cd-4e91-4819-a6a7-7929344d6a72}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="phong-shader.vert">
@@ -111,5 +114,25 @@
     <Object Include="cube.obj">
       <Filter>Resource Files</Filter>
     </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\negx.bmp">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\negy.bmp">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\negz.bmp">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\posx.bmp">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\posy.bmp">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\posz.bmp">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>
