@@ -33,4 +33,5 @@ public:
 
 	template<typename T>
 	void setLightUniform(const char* uniformName, size_t index, const T& value);
+	void updateLight(int index, vec3 position, float force=1.0f);
 };

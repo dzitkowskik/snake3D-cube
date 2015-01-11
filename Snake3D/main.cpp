@@ -28,20 +28,26 @@ float h=15;
 int size = 6;
 int speed = 200;
 bool pause;
+bool glow = true;
+float glowing = 2.0;
+float step = 0.02;
 
 void gameRound(int n);
 
 void init() {
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glCullFace(GL_BACK);
    
 	Shader phongShader("phong-shader.vert", "phong-shader.frag");
 	Shader skyboxShader("skybox.vert", "skybox.frag");
+	Shader glowShader("phong-shader.vert", "glow.frag");
 	
+	sun = CubeMesh(glowShader, "cube.obj");
 	skybox = CubeMesh(skyboxShader, "cube.obj");
 	smallCube = CubeMesh(phongShader, "cube.obj");
+	
 	lightManager = LightManager(phongShader);
-
 	camera = Camera(vec3(15,0,0), vec3(0,0,1), 1.0f);
 
 	TextureManager tm;
@@ -49,6 +55,15 @@ void init() {
 
 	glEnable( GL_DEPTH_TEST );
     glClearColor( 1.0, 1.0, 1.0, 1.0 ); 
+}
+
+void updateGlowing()
+{
+	glowing += step;
+	if(glowing > 2) 
+		step = step < 0 ? step : -step;
+	else if(glowing < 0.0)
+		step = step < 0 ? -step : step;
 }
 
 void display( void ) {
@@ -62,11 +77,24 @@ void display( void ) {
 	{
 		Cube c = cubesToDraw[i];
 		smallCube.draw(c, camera);
+		if(!glow)
+			smallCube.draw(SnakeGame::getInstance().getFood(), camera);
+	}
+	smallCube.deactivate();
+
+	if(glow)
+	{
+		glEnable(GL_CULL_FACE);
+		sun.activate();
+		sun.draw(SnakeGame::getInstance().getFood(), camera, glowing);
+		sun.deactivate();
+		glDisable(GL_CULL_FACE);
 	}
 
 	skybox.activate();
-	Cube sky(vec3(), vec4(), 50.0);
+	Cube sky(vec3(), vec4(), 150.0);
 	skybox.drawCubeMap(sky, camera, cubemapTexture);
+	skybox.deactivate();
 
 	glutSwapBuffers();
 	Angel::CheckError();
@@ -137,6 +165,7 @@ void printInstruction()
 	cout << "Press [ to lower board size" << endl;
 	cout << "Press ] to enlarge board size" << endl;
 	cout << "Press r to restart the game" << endl;
+	cout << "Press g to toggle food glowing" << endl;
 	cout << "HAVE FUN!" << endl;
 }
 
@@ -187,6 +216,10 @@ void keyboard( unsigned char key, int x, int y ) {
 		case 'p':
 			pause = !pause;
 			break;
+		case 'g':
+		case 'G':
+			glow = !glow;
+			break;
 	}
 }
 
@@ -209,6 +242,12 @@ void reshape( int width, int height )
 	camera.aspect = float(width)/height;
 }
 
+void updateFoodLight()
+{
+	Cube food = SnakeGame::getInstance().getFood();
+	lightManager.updateLight(0, food.position, glowing);
+}
+
 void gameRound(int n)
 {
 	if(!pause)
@@ -223,6 +262,12 @@ void gameRound(int n)
 void idle()
 {
 	if (pause) return;
+
+	if(glow)
+	{
+		updateGlowing();
+		updateFoodLight();
+	}
 
 	Snake snake_temp = SnakeGame::getInstance().getSnake();
 	Cube head = snake_temp.cubes.front();

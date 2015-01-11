@@ -43,7 +43,12 @@ void CubeMesh::activate()
 	glUseProgram(this->shader.shaderProgram);
 }
 
-void CubeMesh::draw(Cube cube, Camera camera)
+void CubeMesh::deactivate()
+{
+	glUseProgram(0);
+}
+
+void CubeMesh::draw(Cube cube, Camera camera, float material_shininess)
 {
 	mat4  projection = Perspective( 45.0, camera.aspect, 0.1, 300.0 );
     glUniformMatrix4fv( this->shader.projectionUniform, 1, GL_TRUE, projection );
@@ -57,7 +62,6 @@ void CubeMesh::draw(Cube cube, Camera camera)
 	glUniformMatrix4fv( this->shader.modelViewUniform, 1, GL_TRUE, modelView );
 
 	vec4 material_specular_color( .5, 0.2, .5, 1.0 );
-	float  material_shininess = .5;
 
 	glUniform4fv( glGetUniformLocation(this->shader.shaderProgram, "MaterialColor"), 1, cube.color );
 	glUniform4fv( glGetUniformLocation(this->shader.shaderProgram, "MaterialSpecularColor"), 1, material_specular_color );

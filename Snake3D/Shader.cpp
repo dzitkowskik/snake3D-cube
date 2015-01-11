@@ -3,7 +3,7 @@
 Shader::Shader(const char* vertShader, const char* fragShader)
 {
 	shaderProgram = InitShader(vertShader, fragShader, "fragColor");
-	
+	glUseProgram(shaderProgram);
 	// get uniform locations
 	projectionUniform = glGetUniformLocation(shaderProgram, "Projection");
 	modelViewUniform = glGetUniformLocation(shaderProgram, "ModelView");
@@ -11,4 +11,5 @@ Shader::Shader(const char* vertShader, const char* fragShader)
 	
 	// get attribute locations
 	positionAttribute = glGetAttribLocation(shaderProgram, "position");
+	glUseProgram(0);
 }

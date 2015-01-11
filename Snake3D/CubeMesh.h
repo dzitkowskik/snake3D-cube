@@ -21,12 +21,14 @@ public:
 	{
 		activate();
 		loadModel(); 
+		deactivate();
 	}
 	~CubeMesh(void){}
 
 public:
 	void activate();
-	void draw(Cube cube, Camera camera);
+	void deactivate();
+	void draw(Cube cube, Camera camera, float material_shininess=.5);
 	void drawCubeMap(Cube cube, Camera camera, GLuint cubemapTexture);
 
 private:

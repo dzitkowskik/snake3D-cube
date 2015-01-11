@@ -53,20 +53,11 @@ vector<Cube> GetSnake()
 	return result;
 }
 
-vector<Cube> GetFood()
-{
-	vector<Cube> result;
-	result.push_back(SnakeGame::getInstance().getFood());
-	return result;
-}
-
 vector<Cube> Game()
 {
 	vector<Cube> result;
 	vector<Cube> board = GetBoard();
 	vector<Cube> snake = GetSnake();
-	vector<Cube> food = GetFood();
-	result.insert(result.end(), food.begin(), food.end());
 	result.insert(result.end(), board.begin(), board.end());
 	result.insert(result.end(), snake.begin(), snake.end());
 	return result;
